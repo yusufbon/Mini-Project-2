@@ -24,3 +24,5 @@ https://www.w3schools.com/java/java_try_catch.asp used java exceptions for both 
 https://www.tutorialspoint.com/java/number_parseint.htm
 
 https://www.w3schools.com/java/ref_string_equalsignorecase.asp
+
+https://github.com/yusufbon/Mini-Project-2/tree/main
