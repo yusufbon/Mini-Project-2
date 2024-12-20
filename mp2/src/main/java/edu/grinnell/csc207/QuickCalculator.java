@@ -1,66 +1,72 @@
+
 package edu.grinnell.csc207;
 
-
-
-//import edu.grinnell.csc207.util.*;
-
-
-import edu.grinnell.csc207.BigFraction;
+import java.io.PrintWriter;
 
 /**
  * QuickCalculator provides a way to quickly evaluate expressions from the command line.
  * Supports arithmetic operations and register storage.
  *
- * @author Bonsen
+ * @author Bonsen Yusuf
  */
 public class QuickCalculator {
-    public static void main(String[] args) {
-        BFCalculator calculator = new BFCalculator();
-        BFRegisterSet registers = new BFRegisterSet();
 
-        for (String expression : args) {
-            try {
-                processInput(expression, calculator, registers);
-                System.out.println(expression + " -> " + calculator.get());
-            } catch (Exception e) {
-                System.out.println("Error processing: " + expression + " - " + e.getMessage());
-            }
-        }
-    }
+  /**
+   * Main method for QuickCalculator.
+   *
+   * This method reads arithmetic expressions from command-line arguments,
+   * processes them using a fraction calculator, and prints the results.
+   *
+   * @param args command-line arguments containing expressions to evaluate.
+   *             Each argument should be a valid arithmetic expression
+   *             involving fractions and operators (+, -, *, /).
+   */
+  public static void main(String[] args) {
+    BFCalculator calculator = new BFCalculator();
+    BFRegisterSet registers = new BFRegisterSet();
+    PrintWriter pen = new PrintWriter(System.out, true);
 
-    /**
-     * Processes a command-line argument for quick evaluation.
-     *
-     * @param input the input expression.
-     * @param calculator the calculator to perform operations.
-     * @param registers the register set for storing fractions.
-     */
-    private static void processInput(String input, BFCalculator calculator, BFRegisterSet registers) {
-        // Split the input into components
-        String[] tokens = input.split(" ");
-       
-        for (String token : tokens) {
-            if (token.matches("\\d+/\\d+")) { // Check if token is a fraction
-                calculator.add(new BigFraction(token)); // Add fraction to calculator
-            } else if (token.equals("+")) { // Handle addition
-                // Addition is handled automatically in the calculator
-            } else if (token.equals("-")) { // Handle subtraction
-                calculator.subtract(calculator.get()); // Subtract current value
-            } else if (token.equals("*")) { // Handle multiplication
-                calculator.multiply(calculator.get()); // Multiply current value
-            } else if (token.equals("/")) { // Handle division
-                calculator.divide(calculator.get()); // Divide current value
-            } else if (token.matches("R[0-9]+")) { // Check if token is a register (e.g., R1)
-                char register = (char) ('a' + Integer.parseInt(token.substring(1)) - 1); // Convert R1 to 'a'
-                BigFraction value = registers.get(register); // Get value from registers
-                if (value != null) {
-                    calculator.add(value); // Add register value to calculator
-                } else {
-                    throw new IllegalArgumentException("Register " + register + " is empty.");
-                }
-            } else {
-                throw new IllegalArgumentException("Invalid input: " + token);
-            }
-        }
-    }
-}
+    for (String expression : args) {
+      try {
+        processInput(expression, calculator, registers);
+        pen.println(expression + " -> " + calculator.get());
+      } catch (Exception e) {
+        pen.println("Error processing: " + expression + " - " + e.getMessage());
+      } // catch
+    } // for
+  } // main(String[] args)
+
+  /**
+   * Processes a command-line argument for quick evaluation.
+   *
+   * @param input      the input expression.
+   * @param calculator the calculator to perform operations.
+   * @param registers  the register set for storing fractions.
+   */
+  private static void processInput(String input, BFCalculator calculator,
+                                   BFRegisterSet registers) {
+    // Split the input into components
+    String[] components = input.split(" ");
+    for (String component : components) {
+      if (component.matches("\\d+/\\d+")) { // Check if the component is a fraction
+        calculator.add(new BigFraction(component)); // Add fraction to calculator
+      } else if (component.equals("-")) { // Handle subtraction
+        calculator.subtract(calculator.get()); // Subtract current value
+      } else if (component.equals("*")) { // Handle multiplication
+        calculator.multiply(calculator.get()); // Multiply current value
+      } else if (component.equals("/")) { // Handle division
+        calculator.divide(calculator.get()); // Divide current value
+      } else if (component.matches("R[0-9]+")) { // Check if component is a register
+        char register = (char) ('a' + Integer.parseInt(component.substring(1)) - 1);
+        BigFraction value = registers.get(register); // Get value from registers
+        if (value != null) {
+          calculator.add(value); // Add register value to calculator
+        } else {
+          throw new IllegalArgumentException("Register " + register + " is empty.");
+        } // else
+      } else {
+        throw new IllegalArgumentException("Invalid input: " + component);
+      } // else
+    } // for
+  } // processInput(String input, BFCalculator calculator, BFRegisterSet registers)
+} // QuickCalculator
